@@ -1,0 +1,21 @@
+{
+            var tcs = new TfsTeamProjectCollection(new Uri("CollectionURL"));
+            IIdentityManagementService ims = (IIdentityManagementService)tcs.GetService(typeof(IIdentityManagementService));
+            TeamFoundationIdentity[] tfi = ims.ListApplicationGroups("[project]", ReadIdentityOptions.IncludeReadFromSource);
+            List<string> ids = new List<string>();
+            foreach (var member in tfi)
+            {
+                ids.Add(member.DisplayName);
+            }
+            TeamFoundationIdentity[][] UserId = ims.ReadIdentities(IdentitySearchFactor.DisplayName, ids.ToArray(), MembershipQuery.None, ReadIdentityOptions.ExtendedProperties);
+            List<TeamFoundationIdentity> UserIds = UserId.SelectMany(T => T).ToList();
+            foreach (TeamFoundationIdentity grupo in UserIds)
+            {
+                // apenas mostra grupos na lista
+                if (grupo.IsContainer)
+                {
+                    Console.WriteLine(grupo.DisplayName);
+                }
+            }
+            Console.ReadLine();
+}

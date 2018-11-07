@@ -1,0 +1,15 @@
+var tcs = new TfsTeamProjectCollection(new Uri("CollectionURL"));
+
+            IIdentityManagementService ims = (IIdentityManagementService)tcs.GetService(typeof(IIdentityManagementService));
+
+            var tfsGroupIdentity = ims.ReadIdentity(IdentitySearchFactor.AccountName,
+                                                    "[TeamProject]\\GroupName",
+                                                    MembershipQuery.None,
+                                                    ReadIdentityOptions.IncludeReadFromSource);
+
+            var userIdentity = ims.ReadIdentity(IdentitySearchFactor.DirectoryAlias,
+                                                    "userlogin",
+                                                    MembershipQuery.None,
+                                                    ReadIdentityOptions.IncludeReadFromSource);
+
+            ims.AddMemberToApplicationGroup(tfsGroupIdentity.Descriptor, userIdentity.Descriptor);
